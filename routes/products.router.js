@@ -12,10 +12,14 @@ router.get('/',async (req, res, next) => {
   }
 })
 
-router.get('/:id',async (req, res) => {
-  const { id } = req.params
-  const product = service.findOne(id)
-  res.json(product)
+router.get('/:id',async (req, res, next) => {
+  try{
+    const { id } = req.params
+    const product = await service.findOne(id)
+    res.json(product)
+  }catch(err){
+    next(err)
+  }
 })
 
 // Receive only the attributes to update
