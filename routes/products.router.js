@@ -1,71 +1,40 @@
 const express = require('express');
-const faker = require('faker');
+const ProductsService = require('../services/products.service')
 const router = express.Router();
+const service = new ProductsService();
 
-router.get('/',(req, res) => {
-  const products = [];
-  const { size } = req.query;
-  const limit = size || 5;
-  for(let i = 1; i <= limit; i++){
-    products.push({
-      name: faker.commerce.productName(),
-      price: parseInt(faker.commerce.price(), 10),
-      img: faker.image.imageUrl()
-    })
-  }
+router.get('/',async (req, res) => {
+  const products = await service.find()
   res.json(products)
 })
 
-router.get('/filter',(req, res) => {
-  res.send('Yo soy un filtro')
-})
-
-router.get('/:id',(req, res) => {
+router.get('/:id',async (req, res) => {
   const { id } = req.params
-  res.json([
-    {
-      id,
-      'name': 'product 1',
-      'price': 2500
-    }
-  ])
-})
-
-// Receive all attributes
-router.put('/:id',(req, res) => {
-  const { id } = req.params
-  const { body } = req
-  res.json({
-    id,
-    body,
-    message: 'Put it'
-  })
+  const product = service.findOne(id)
+  res.json(product)
 })
 
 // Receive only the attributes to update
-router.patch('/:id',(req, res) => {
+router.patch('/:id',async (req, res) => {
   const { id } = req.params
   const { body } = req
-  res.json({
-    id,
-    body,
-    message: 'Patch it'
-  })
+  const product = service.update(id, body)
+  res.json(product)
 })
 
-router.post('/',(req, res) => {
+router.post('/',async (req, res) => {
   const { body } = req
-  res.status(201).json({
-    body,
-    message: 'Created'
-  })
+  const newProduct = service.create(body)
+  res.status(201).json(newProduct)
 })
 
-router.delete('/:id',(req, res) => {
-  const { id } = req.params
-  res.json({
-    id,
-    message: 'Delete it'
-  })
+router.delete('/:id',async (req, res) => {
+  try{
+    const { id } = req.params
+    const rta = await service.delete(id)
+    res.json(rta)
+  }catch(err){
+    res.status(404).json({ message: err.message })
+  }
 })
 module.exports = router;
