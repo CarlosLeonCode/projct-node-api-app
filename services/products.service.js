@@ -29,6 +29,7 @@ class ProductsService {
   }
 
   find() {
+    const se = getCar();
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve(this.products)
