@@ -4,10 +4,10 @@ const setupModels = require('../db/models/index')
 
 const USER = encodeURIComponent(config.dbUser)
 const PASS = encodeURIComponent(config.dbPassword)
-const URI = `postgres://${USER}:${PASS}@${config.dbHost}:${config.dbPort}/${config.dbName}`;
+const URI = `${config.dbDialect}://${USER}:${PASS}@${config.dbHost}:${config.dbPort}/${config.dbName}`;
 
 const sequelize = new Sequelize(URI, {
-  dialect: 'postgres',
+  dialect: `${config.dbDialect}`,
   logging: console.log,
 })
 

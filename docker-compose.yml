@@ -1,7 +1,7 @@
 version: '3.3'
 
 services:
-  postgres: 
+  postgres:
     image: postgres:13
     environment:
       - POSTGRES_DB=my_store
@@ -11,3 +11,24 @@ services:
       - 5432:5432
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+
+  mysql:
+    platform: linux/x86_64
+    image: mysql:5
+    environment:
+      - MYSQL_DATABASE=my_store
+      - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=admin123
+      - MYSQL_PORT=3306
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - MYSQL_ROOT_PASSWORD=my_store
+      - PMA_HOST=mysql
+    ports:
+      - 8080:80
