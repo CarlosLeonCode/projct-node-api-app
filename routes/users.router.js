@@ -1,9 +1,17 @@
 const express = require('express');
 const faker = require('faker');
 const router = express.Router();
+const UserService = require('../services/users.service')
 
-router.get('/', (req, res) => {
-  res.send('Get -> Users')
+const service = new UserService();
+
+router.get('/', async (req, res) => {
+  try{
+    const users = await service.find()
+    res.json(users)
+  }catch (error) {
+
+  }
 })
 
 router.get('/:id', (req, res) => {

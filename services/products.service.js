@@ -1,5 +1,6 @@
 const faker = require('faker');
 const boom = require('@hapi/boom')
+
 class ProductsService {
 
   constructor(){
@@ -28,7 +29,7 @@ class ProductsService {
     return newProduct
   }
 
-  find() {
+  findAll(){
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve(this.products)

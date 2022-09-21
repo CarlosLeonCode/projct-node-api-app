@@ -4,7 +4,7 @@ const router = require('./routes/products.router');
 const { errorHandler, errorLogs, boomErrorHandler } = require('./middlewares/error.handler');
 const cors = require('cors');
 const app = express();
-const port = 3001;
+const port = 3000;
 
 app.use(express.json());
 const whiteList = ['http://localhost:8080']
