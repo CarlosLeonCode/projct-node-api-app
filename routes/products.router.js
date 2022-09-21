@@ -7,7 +7,7 @@ const service = new ProductsService();
 
 router.get('/',async (req, res, next) => {
   try{
-    const products = await service.findAll()
+    const products = await service.find()
     res.json(products)
   }catch(err){
     next(err)
@@ -34,7 +34,7 @@ router.patch('/:id',
   async (req, res) => {
     const { id } = req.params
     const { body } = req
-    const product = service.update(id, body)
+    const product = await service.update(id, body)
     res.json(product)
   }
 )
@@ -43,7 +43,7 @@ router.post('/',
   validatorHandler(createProductSchema, 'body'),
   async (req, res) => {
     const { body } = req
-    const newProduct = service.create(body)
+    const newProduct = await service.create(body)
     res.status(201).json(newProduct)
   }
 )

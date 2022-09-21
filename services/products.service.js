@@ -1,44 +1,19 @@
-const faker = require('faker');
 const boom = require('@hapi/boom')
-
+const { models } = require('../libs/sequelize')
 class ProductsService {
 
-  constructor(){
-    this.products = [];
-    this.generate()
+  async create(data) {
+    const newProduct = await models.Product.create(data);
+    return newProduct;
   }
 
-  generate(){
-    const limit = 50;
-    for(let i = 1; i <= limit; i++){
-      this.products.push({
-        id: faker.datatype.uuid(),
-        name: faker.commerce.productName(),
-        price: parseInt(faker.commerce.price(), 10),
-        img: faker.image.imageUrl()
-      })
-    }
-  }
-
-  create(data) {
-    const newProduct = {
-      id: faker.datatype.uuid(),
-      ...data
-    }
-    this.products.push(newProduct)
-    return newProduct
-  }
-
-  findAll(){
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve(this.products)
-      }, 5000)
-    })
+  async find(){
+    const response = await models.Product.findAll();
+    return response
   }
 
   async findOne(id) {
-    const product = this.products.find(item => item.id == id)
+    const product = await models.Product.findByPk(id)
     if(!product){
       throw boom.notFound('Product not found');
     }
@@ -46,25 +21,15 @@ class ProductsService {
   }
 
   async update(id, changes) {
-    const index = this.products.findIndex(item => item.id === id);
-    if(index === -1){
-      throw boom.notFound('Product not found');
-    }
-    const product = this.products[index];
-    this.products[index] = {
-      ...product,
-      ...changes
-    }
-    return this.products[index]
+    const product = await this.findOne(id);
+    const response = await product.update(changes);
+    return response;
   }
 
   async delete(id) {
-    const index = this.products.findIndex(item => item.id === id);
-    if(index === -1){
-      throw boom.notFound('Product not found');
-    }
-    this.products.splice(index, 1)
-    return { message: 'delete it!' }
+    const product = await this.findOne(id);
+    await product.destroy();
+    return { message: 'delete it!', id: id }
   }
 }
 
